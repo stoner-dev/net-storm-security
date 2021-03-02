@@ -25,9 +25,9 @@ DROP TABLE IF EXISTS `device`;
 CREATE TABLE `device` (
   `iddevice` int(11) NOT NULL AUTO_INCREMENT,
   `status` varchar(45) NOT NULL,
-  `ipaddress` varchar(45) NOT NULL,
   `macaddress` varchar(45) DEFAULT NULL,
   `os` varchar(45) DEFAULT NULL,
+  `timestamp` int(11) NOT NULL,
   PRIMARY KEY (`iddevice`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -53,7 +53,7 @@ CREATE TABLE `intensescaninfo` (
   `is_intense` tinyint(1) NOT NULL,
   `device_type` varchar(45) DEFAULT NULL,
   `tcp_sequence_prediction` varchar(45) DEFAULT NULL,
-  `extended_port_info` varchar(45) DEFAULT NULL,
+  `timestamp` int(11) NOT NULL,
   `for_iddevice` int(11) NOT NULL,
   PRIMARY KEY (`idintensescaninfo`),
   KEY `fk_intensescaninfo_device1_idx` (`for_iddevice`),
@@ -71,6 +71,61 @@ LOCK TABLES `intensescaninfo` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `ipaddress`
+--
+
+DROP TABLE IF EXISTS `ipaddress`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ipaddress` (
+  `idipaddress` int(11) NOT NULL AUTO_INCREMENT,
+  `address` varchar(45) NOT NULL,
+  `timestamp` varchar(45) NOT NULL,
+  `for_iddevice` int(11) NOT NULL,
+  PRIMARY KEY (`idipaddress`),
+  KEY `fk_ipaddress_device1_idx` (`for_iddevice`),
+  CONSTRAINT `fk_ipaddress_device1` FOREIGN KEY (`for_iddevice`) REFERENCES `device` (`iddevice`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ipaddress`
+--
+
+LOCK TABLES `ipaddress` WRITE;
+/*!40000 ALTER TABLE `ipaddress` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ipaddress` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `penetrationtest`
+--
+
+DROP TABLE IF EXISTS `penetrationtest`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `penetrationtest` (
+  `idpenetrationtest` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(45) NOT NULL,
+  `data` varchar(45) NOT NULL,
+  `timestamp` int(11) NOT NULL,
+  `for_iddevice` int(11) NOT NULL,
+  PRIMARY KEY (`idpenetrationtest`),
+  KEY `fk_penetrationtest_device1_idx` (`for_iddevice`),
+  CONSTRAINT `fk_penetrationtest_device1` FOREIGN KEY (`for_iddevice`) REFERENCES `device` (`iddevice`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `penetrationtest`
+--
+
+LOCK TABLES `penetrationtest` WRITE;
+/*!40000 ALTER TABLE `penetrationtest` DISABLE KEYS */;
+/*!40000 ALTER TABLE `penetrationtest` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `ports`
 --
 
@@ -83,6 +138,8 @@ CREATE TABLE `ports` (
   `service` varchar(45) NOT NULL,
   `state` varchar(45) NOT NULL,
   `version` varchar(45) DEFAULT NULL,
+  `timestamp` int(11) NOT NULL,
+  `extended_port_info` varchar(45) DEFAULT NULL,
   `for_iddevice` int(11) NOT NULL,
   PRIMARY KEY (`idport`),
   KEY `fk_ports_device1_idx` (`for_iddevice`),
@@ -98,32 +155,6 @@ LOCK TABLES `ports` WRITE;
 /*!40000 ALTER TABLE `ports` DISABLE KEYS */;
 /*!40000 ALTER TABLE `ports` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `timestamp`
---
-
-DROP TABLE IF EXISTS `timestamp`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `timestamp` (
-  `idtimestamp` int(11) NOT NULL AUTO_INCREMENT,
-  `lastscan` varchar(45) NOT NULL,
-  `for_iddevice` int(11) NOT NULL,
-  PRIMARY KEY (`idtimestamp`),
-  KEY `fk_timestamp_device_idx` (`for_iddevice`),
-  CONSTRAINT `fk_timestamp_device` FOREIGN KEY (`for_iddevice`) REFERENCES `device` (`iddevice`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `timestamp`
---
-
-LOCK TABLES `timestamp` WRITE;
-/*!40000 ALTER TABLE `timestamp` DISABLE KEYS */;
-/*!40000 ALTER TABLE `timestamp` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -134,4 +165,5 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-03-02  9:40:33
+-- Dump completed on 2021-03-02 10:35:33
+
